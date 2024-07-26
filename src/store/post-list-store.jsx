@@ -1,5 +1,5 @@
 import { createContext, useReducer } from "react";
-
+import { useState, useEffect } from "react";
 // const DEFAULT_POST_LIST = [{
 //     id: '1',
 //     title: 'Go To Goa',
@@ -20,8 +20,7 @@ import { createContext, useReducer } from "react";
 export const PostList = createContext({
   postList: [],
   addPost: () => {},
-  deletePost: () => {},
-  addInitialPost: () => {},
+  deletePost: () => {}
 });
 
 const postListReducer = (currPostList, action) => {
@@ -31,7 +30,7 @@ const postListReducer = (currPostList, action) => {
       (post) => post.id !== action.payload.postId
     );
   } else if (action.type == "ADD_POST") {
-    newPostList = [action.payload, ...currPostList];
+    newPostList = [action.payload.post, ...currPostList];
   } else if (action.type == "ADD_INITIAL_POSTS") {
     newPostList = action.payload.posts;
   }
@@ -42,37 +41,27 @@ const PostListProvider = ({ children }) => {
   const [postList, dispatchPostList] = useReducer(postListReducer, []);
 
   const deletePost = (postId) => {
-    console.log("clicked delete post for id: " + postId);
     dispatchPostList({
       type: "DELETE_POST",
       payload: { postId },
     });
   };
 
-  const addPost = (userIdVal, titleVal, bodyVal, reactionsVal, tagsVal) => {
-    if (
-      userIdVal === "" ||
-      titleVal === "" ||
-      bodyVal === "" ||
-      reactionsVal === "" ||
-      tagsVal === ""
-    ) {
-      console.log("some val are null");
-      return;
-    }
-    console.log(
-      "add post: " + userIdVal + titleVal + bodyVal,
-      +reactionsVal + tagsVal
-    );
+  const addPost = (post) => {
+    // if (
+    //   userIdVal === "" ||
+    //   titleVal === "" ||
+    //   bodyVal === "" ||
+    //   reactionsVal === "" ||
+    //   tagsVal === ""
+    // ) {
+    //   console.log("some val are null");
+    //   return;
+    // }
     dispatchPostList({
       type: "ADD_POST",
       payload: {
-        id: Date.now(),
-        title: titleVal,
-        body: bodyVal,
-        reactions: reactionsVal,
-        userId: userIdVal,
-        tags: tagsVal,
+        post
       },
     });
   };
@@ -91,8 +80,7 @@ const PostListProvider = ({ children }) => {
       value={{
         postList,
         addPost,
-        deletePost,
-        addInitialPost,
+        deletePost
       }}
     >
       {children}

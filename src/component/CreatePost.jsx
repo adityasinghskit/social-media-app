@@ -1,16 +1,17 @@
 import { useContext, useRef } from "react";
-import { PostList } from "../assets/store/post-list-store";
+import { PostList } from "../store/post-list-store";
+import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
-const {addPost} = useContext(PostList);
-
+  const { addPost } = useContext(PostList);
+  const navigate = useNavigate();
   const userId = useRef();
   const title = useRef();
   const body = useRef();
   const reactions = useRef();
   const tags = useRef();
 
-  const handleSubmit = (event) =>{
+  const handleSubmit = (event) => {
     event.preventDefault();
     const userIdVal = userId.current.value;
     const titleVal = title.current.value;
@@ -18,19 +19,34 @@ const {addPost} = useContext(PostList);
     const reactionsVal = reactions.current.value;
     const tagsVal = tags.current.value.split(/\s+/);
 
-    addPost(userIdVal, titleVal, bodyVal,
-       reactionsVal, tagsVal);
-       userId.current.value = "";
-       title.current.value = "";
-       body.current.value = "";
-       reactions.current.value = "";
-       tags.current.value = "";
-  }
+    userId.current.value = "";
+    title.current.value = "";
+    body.current.value = "";
+    reactions.current.value = "";
+    tags.current.value = "";
+
+    fetch("https://dummyjson.com/posts/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: titleVal,
+        body: bodyVal,
+        reactions: reactionsVal,
+        userId: userIdVal,
+        tags: tagsVal,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        addPost(res);
+      });
+      navigate("/");
+  };
 
   return (
     <>
       <form className="createPost" onSubmit={handleSubmit}>
-      <div className="mb-3">
+        <div className="mb-3">
           <label htmlFor="userId" className="form-label">
             userId
           </label>
