@@ -6,5 +6,18 @@
     width: 100%;
 }
 .sidebar{
-    min-height: 800px;
+    min-height: 100vh;
+    max-width: 200px;
+}
+.post-card{
+    margin: 20px;
+}
+.hashtag{
+    margin: 0px 3px;
+}
+.reactions{
+    margin: 10px 0px;
+}
+.createPost{
+    margin:20px
 }
