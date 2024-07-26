@@ -10,18 +10,19 @@ const PostList = () => {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    setFetching(true);
-    fetch("https://dummyjson.com/posts", {signal})
-      .then((res) => res.json())
-      .then((data) => {
-        addInitialPost(data.posts);
-        setFetching(false);
-      });
-
-      return () => {
-        console.log("cleaning up useEffect...");
-        controller.abort();
-      }
+    if (postList.length === 0) {
+      setFetching(true);
+      fetch("https://dummyjson.com/posts", { signal })
+        .then((res) => res.json())
+        .then((data) => {
+          addInitialPost(data.posts);
+          setFetching(false);
+        });
+    }
+    return () => {
+      console.log("cleaning up useEffect...");
+      controller.abort();
+    };
   }, []);
 
   const handleGetPostsClick = () => {};

@@ -17,6 +17,7 @@ const {addPost} = useContext(PostList);
     const bodyVal = body.current.value;
     const reactionsVal = reactions.current.value;
     const tagsVal = tags.current.value.split(/\s+/);
+
     addPost(userIdVal, titleVal, bodyVal,
        reactionsVal, tagsVal);
        userId.current.value = "";

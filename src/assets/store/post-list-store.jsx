@@ -21,59 +21,70 @@ export const PostList = createContext({
   postList: [],
   addPost: () => {},
   deletePost: () => {},
-  addInitialPost: () => {}
+  addInitialPost: () => {},
 });
 
 const postListReducer = (currPostList, action) => {
   let newPostList = currPostList;
-  if(action.type == 'DELETE_POST'){
-    newPostList = currPostList.filter((post) => 
-      post.id !== action.payload.postId);
-  } else if(action.type == 'ADD_POST'){
-     newPostList = [action.payload, ...currPostList];
-  } else if(action.type == 'ADD_INITIAL_POSTS'){
+  if (action.type == "DELETE_POST") {
+    newPostList = currPostList.filter(
+      (post) => post.id !== action.payload.postId
+    );
+  } else if (action.type == "ADD_POST") {
+    newPostList = [action.payload, ...currPostList];
+  } else if (action.type == "ADD_INITIAL_POSTS") {
     newPostList = action.payload.posts;
   }
   return newPostList;
-}
+};
 
 const PostListProvider = ({ children }) => {
-  const [postList, dispatchPostList] = useReducer(
-    postListReducer, []);
+  const [postList, dispatchPostList] = useReducer(postListReducer, []);
 
   const deletePost = (postId) => {
-    console.log("clicked delete post for id: "+ postId);
+    console.log("clicked delete post for id: " + postId);
     dispatchPostList({
       type: "DELETE_POST",
-      payload: {postId}
-    })
+      payload: { postId },
+    });
   };
 
-  const addPost = (userIdVal, titleVal, bodyVal,
-    reactionsVal, tagsVal) => {
-      console.log("add post: "+userIdVal+ titleVal+ bodyVal,+
-        reactionsVal+ tagsVal);
-      dispatchPostList({
-        type: "ADD_POST",
-        payload: {
-          id: Date.now(),
-          title: titleVal,
-          body: bodyVal,
-          reactions: reactionsVal,
-          userId: userIdVal,
-          tags: tagsVal
-        }
-      })
+  const addPost = (userIdVal, titleVal, bodyVal, reactionsVal, tagsVal) => {
+    if (
+      userIdVal === "" ||
+      titleVal === "" ||
+      bodyVal === "" ||
+      reactionsVal === "" ||
+      tagsVal === ""
+    ) {
+      console.log("some val are null");
+      return;
+    }
+    console.log(
+      "add post: " + userIdVal + titleVal + bodyVal,
+      +reactionsVal + tagsVal
+    );
+    dispatchPostList({
+      type: "ADD_POST",
+      payload: {
+        id: Date.now(),
+        title: titleVal,
+        body: bodyVal,
+        reactions: reactionsVal,
+        userId: userIdVal,
+        tags: tagsVal,
+      },
+    });
   };
 
   const addInitialPost = (posts) => {
-      dispatchPostList({
-        type: "ADD_INITIAL_POSTS",
-        payload: {
-          posts
-        }
-      })
-  }; 
+    dispatchPostList({
+      type: "ADD_INITIAL_POSTS",
+      payload: {
+        posts,
+      },
+    });
+  };
 
   return (
     <PostList.Provider
@@ -81,7 +92,7 @@ const PostListProvider = ({ children }) => {
         postList,
         addPost,
         deletePost,
-        addInitialPost
+        addInitialPost,
       }}
     >
       {children}
